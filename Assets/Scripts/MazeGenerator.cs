@@ -10,11 +10,11 @@ public class MazeGenerator : MonoBehaviour
     
     private void Start()
     {
-        _cells = new Cell[10, 10];
-        spawnEntireGrid(10);
+        _cells = new Cell[size,size];
+        SpawnEntireGrid(size);
     }
 
-    private void spawnEntireGrid(int size)
+    private void SpawnEntireGrid(int size)
     {
         var wallSize = _wallPrefab.transform.localScale.y;
         for (int x = 0; x < size; x++)
@@ -28,35 +28,37 @@ public class MazeGenerator : MonoBehaviour
                 Quaternion wallRotation = Quaternion.Euler(0f,90f,0f);
                 var positionWall = positionCell + new Vector3(wallSize / 2f, 0f, 0f);
                 var newWall = Instantiate(_wallPrefab, positionWall, wallRotation);
-                newCell.addWall(1,newWall);
+                newCell.AddWall(1,newWall);
 
                 positionWall = positionCell + new Vector3(0f, 0f, wallSize / 2f);
                 newWall = Instantiate(_wallPrefab, positionWall, Quaternion.identity);
-                newCell.addWall(0,newWall);
+                newCell.AddWall(0,newWall);
                 
                 if (x == 0)
                 {
                     Quaternion wallRotated = Quaternion.Euler(0f,90f,0f);
                     positionWall = positionCell + new Vector3(-wallSize / 2f, 0f, 0f);
                     newWall = Instantiate(_wallPrefab, positionWall, wallRotated);
-                    newCell.addWall(3,newWall);
+                    newCell.AddWall(3,newWall);
                 }
                 else
                 {
-                    newCell.addWall(3,_cells[x-1,z].getWall(1));
+                    newCell.AddWall(3,_cells[x-1,z].GetWall(1));
                 }
                 
                 if (z == 0)
                 {
                     positionWall = positionCell + new Vector3(0f, 0f, -wallSize / 2f);
                     newWall = Instantiate(_wallPrefab, positionWall, Quaternion.identity);
-                    newCell.addWall(2,newWall);
+                    newCell.AddWall(2,newWall);
                 }else
                 {
-                    newCell.addWall(2,_cells[x,z-1].getWall(0));
+                    newCell.AddWall(2,_cells[x,z-1].GetWall(0));
                 }
                 
             } 
         }
     }
+    
+    
 }

@@ -16,22 +16,22 @@ public class Cell
         _worldPosition = worldPosition;
     }
     
-    public int getIndex()
+    public int GetIndex()
     {
         return _index;
     }
 
-    public void addWall(int index,GameObject wall)
+    public void AddWall(int index,GameObject wall)
     {
         _walls[index] = wall;
     }
     
-    public GameObject getWall(int index)
+    public GameObject GetWall(int index)
     {
         return _walls[index];
     }
 
-    public void destroyWall(int index)
+    public void DestroyWall(int index)
     {
         if(_walls[index]==null)Debug.Log("Critical Error: you are trying to destroy a wall that there isn't");
         else
@@ -40,7 +40,7 @@ public class Cell
         }
     }
 
-    public Vector3 getWorldPosition()
+    public Vector3 GetWorldPosition()
     {
         return _worldPosition;
     }
