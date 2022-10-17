@@ -9,17 +9,16 @@ public class MazeGenerator : MonoBehaviour
     public bool timeLimited = true;
     public float timeIteration = 0.1f;
     [SerializeField] private GameObject _wallPrefab;
+    [SerializeField] private GameObject _cubePrefab;
     private Cell[,] _cells;
     private float _wallSize;
-
+    private DisjointSet _sets;
 
     private void Start()
     {
         _cells = new Cell[size, size];
         SpawnEntireGrid(size);
-
         StartCoroutine(RanMaze());
-        DFS();
     }
 
     private void SpawnEntireGrid(int size)
@@ -71,13 +70,14 @@ public class MazeGenerator : MonoBehaviour
 
     private IEnumerator RanMaze()
     {
-        DisjointSet sets = new DisjointSet(size * size);
-        for (int i = 0; i < size * size; i++) sets.MakeSet(i);
+        _sets = new DisjointSet(size * size);
+        for (int i = 0; i < size * size; i++) _sets.MakeSet(i);
         yield return new WaitForSeconds(waitingTimeBeforeStart);
         var source = 0;
         var dest = size * size - 1;
         int iterations = 0;
-        while (sets.FindSet(source) != sets.FindSet(dest))
+        
+        while (_sets.FindSet(source) != _sets.FindSet(dest))
         {
             var randomIndexCell = Random.Range(0, size * size);
             var randomCell = GetCellwithIndex(randomIndexCell);
@@ -95,14 +95,17 @@ public class MazeGenerator : MonoBehaviour
 
             if (indexNeighbour >= 0 && indexNeighbour < size * size)
             {
-                if (sets.FindSet(indexNeighbour) != sets.FindSet(randomIndexCell)) //not reachable
+                if (_sets.FindSet(indexNeighbour) != _sets.FindSet(randomIndexCell)) //not reachable
                 {
                     randomCell.DestroyWall(randomWall);
-                    sets.UnionSet(indexNeighbour, randomIndexCell);
+                    _sets.UnionSet(indexNeighbour, randomIndexCell);
                 }
             }
             if(timeLimited)yield return new WaitForSeconds(timeIteration);
         }
+        
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(Dfs());
     }
 
 
@@ -127,20 +130,77 @@ public class MazeGenerator : MonoBehaviour
         }
 
 
-        private void DFS()
+        private IEnumerator Dfs()
         {
-            Debug.DrawLine(_cells[size-1,size-1].GetWorldPosition(), _cells[0,0].GetWorldPosition(), Color.green, 50.0f, false);
-
-            Stack stack = new Stack();
-            int[] _predecessors = new[size*size -1];
+            Stack<Cell> stack = new Stack<Cell>();
+            var predecessors = new int[size*size];
+            for (int i = 0; i <= size * size - 1; i++) predecessors[i] = -1;
+            
             var source = _cells[0,0];
-            var target = _cells[size - 1, size - 1];
-            stack.Add(source);
-            while (node.GetWorldPosition() != target.GetWorldPosition() || stack.Count>0)
+            stack.Push(source);
+            Cell node = source;
+
+            while(predecessors[size*size-1]==-1)
             {
-                Cell node = stack.Pop();
                 var indexNode = node.GetIndex();
-                if(indexNode-size>=0)_cells
+                var z = indexNode % size; 
+                var x = (indexNode - z) / size;
+                if (x > 0 && predecessors[indexNode - size] == -1 && _sets.FindSet(indexNode - size)==_sets.FindSet(0))
+                {
+                    if (node.GetWall(3) == null)
+                    {
+                        predecessors[indexNode - size] = indexNode;
+                        stack.Push(_cells[x-1,z]);
+                    }
+                }
+
+                if (x < size - 1) 
+                {
+                    if (predecessors[indexNode + size] == -1 && _sets.FindSet(indexNode + size) == _sets.FindSet(0))
+                    {
+                        if (node.GetWall(1) == null)
+                        {
+                            predecessors[indexNode + size] = indexNode;
+                            stack.Push(_cells[x + 1, z]);
+                        }
+                    }
+                }
+
+                if (z < size - 1)
+                {
+                    if (predecessors[indexNode + 1] == -1 && _sets.FindSet(indexNode + 1) == _sets.FindSet(0))
+                    {
+                        if (node.GetWall(0) == null)
+                        {
+                            predecessors[indexNode + 1] = indexNode;
+                            stack.Push(_cells[x, z + 1]);
+                        }
+                    }
+                }
+
+                if (z > 0)
+                {
+                    if (predecessors[indexNode - 1] == -1 && _sets.FindSet(indexNode - 1) == _sets.FindSet(0))
+                    {
+                        if (node.GetWall(2) == null)
+                        {
+                            predecessors[indexNode - 1] = indexNode;
+                            stack.Push(_cells[x, z - 1]);
+                        }
+                    }
+                }
+                node = stack.Pop();
+            }
+            
+            //visualizing path 
+            var backtrackerIndex = size * size - 1;
+            while (predecessors[backtrackerIndex] != -1)
+            {
+                var u = backtrackerIndex % size; 
+                var v = (backtrackerIndex - u) / size;
+                Instantiate(_cubePrefab, _cells[v, u].GetWorldPosition(), Quaternion.identity);
+                backtrackerIndex = predecessors[backtrackerIndex];
+                yield return null;
             }
 
         }
