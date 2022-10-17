@@ -6,7 +6,6 @@ using UnityEngine;
 public class Cell
 {
     private GameObject[] _walls;
-    private int[] _neighbours;
     private int _index;
     private Vector3 _worldPosition;
     public Cell(int x, int y, int sizeMaze, Vector3 worldPosition)

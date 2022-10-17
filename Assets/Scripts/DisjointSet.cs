@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisjointSet : MonoBehaviour
+public class DisjointSet 
 {
     private int[] _set;
     private int[] _rank;
