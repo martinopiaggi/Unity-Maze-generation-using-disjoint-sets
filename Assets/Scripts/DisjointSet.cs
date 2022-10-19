@@ -7,10 +7,10 @@ public class DisjointSet
     private int[] _set;
     private int[] _rank;
 
-    public DisjointSet(int maximumSize)
+    public DisjointSet(int size)
     {
-        _set = new int[maximumSize];
-        _rank = new int[maximumSize];
+        _set = new int[size];
+        _rank = new int[size];
     }
     
     public void MakeSet(int x)
@@ -27,16 +27,12 @@ public class DisjointSet
 
     public void UnionSet(int x, int y)
     {
-        var _parentX = FindSet(x);
-        var _parentY = FindSet(y);
-
-        if (_rank[x] > _rank[y])
-        {
-            _set[_parentY] = _parentX;
-        }
+        var parentX = FindSet(x);
+        var parentY = FindSet(y);
+        if (_rank[x] > _rank[y]) _set[parentY] = parentX;
         else
         {
-            _set[_parentX] = _parentY;
+            _set[parentX] = parentY;
             if (_rank[x] == _rank[y]) _rank[y]++;
         }
     }

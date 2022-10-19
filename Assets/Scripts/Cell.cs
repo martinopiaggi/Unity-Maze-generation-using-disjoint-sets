@@ -32,11 +32,7 @@ public class Cell
 
     public void DestroyWall(int index)
     {
-        if(_walls[index]==null)Debug.Log("Critical Error: you are trying to destroy a wall that there isn't");
-        else
-        {
-            GameObject.Destroy(_walls[index]);
-        }
+        if(_walls[index]!=null) GameObject.Destroy(_walls[index]);
     }
 
     public Vector3 GetWorldPosition()
