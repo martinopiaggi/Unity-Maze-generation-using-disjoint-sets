@@ -3,11 +3,11 @@
 ![mazeCover](https://user-images.githubusercontent.com/72280379/196811359-9cd38f5f-e00a-485b-b4bd-922bd84081d0.jpg)
 
 Maze generator using disjoin-sets in Unity 3D. 
-There are no cycles and the random maze is solvable by a unique path. I have also implemented a Depth First Search to show the path for visualization purposes.
+There are no cycles and the random maze is solvable by a unique path. I have implemented a Depth First Search to show the path for visualization purposes.
 
 # Maze generation visualization
 
-The generation is very quick (50k cells in less than 100 ms) but I also added variables to animate the generation: 
+The generation is very quick (50k cells in less than 100 ms) but It's also possible to view the generation at human speed: 
 
 ![parameters](https://user-images.githubusercontent.com/72280379/197043839-c21b8e2f-d337-411e-b5f6-59e9c8c78c2c.jpg)
 
