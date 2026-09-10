@@ -6,7 +6,7 @@ EditorSettings:
   serializedVersion: 11
   m_ExternalVersionControlSupport: Visible Meta Files
   m_SerializationMode: 2
-  m_LineEndingsForNewScripts: 0
+  m_LineEndingsForNewScripts: 1
   m_DefaultBehaviorMode: 0
   m_PrefabRegularEnvironment: {fileID: 0}
   m_PrefabUIEnvironment: {fileID: 0}
@@ -17,7 +17,7 @@ EditorSettings:
   m_EtcTextureNormalCompressor: 2
   m_EtcTextureBestCompressor: 4
   m_ProjectGenerationIncludedExtensions: txt;xml;fnt;cd;asmdef;rsp;asmref
-  m_ProjectGenerationRootNamespace: 
+  m_ProjectGenerationRootNamespace: DisjointSetMaze
   m_CollabEditorSettings:
     inProgressEnabled: 1
   m_EnableTextureStreamingInEditMode: 1
