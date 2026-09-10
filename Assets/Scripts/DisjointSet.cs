@@ -1,39 +1,78 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
-public class DisjointSet 
+namespace DisjointSetMaze
 {
-    private int[] _set;
-    private int[] _rank;
+    public sealed class DisjointSet
+    {
+        private readonly int[] _parents;
+        private readonly int[] _ranks;
 
-    public DisjointSet(int size)
-    {
-        _set = new int[size];
-        _rank = new int[size];
-    }
-    
-    public void MakeSet(int x)
-    {
-        _set[x] = x;
-        _rank[x] = 0;
-    }
-    
-    public int FindSet(int x)
-    {
-        if (x != _set[x]) return FindSet(_set[x]);
-        return x;
-    }
+        public int ComponentCount { get; private set; }
 
-    public void UnionSet(int x, int y)
-    {
-        var parentX = FindSet(x);
-        var parentY = FindSet(y);
-        if (_rank[x] > _rank[y]) _set[parentY] = parentX;
-        else
+        public DisjointSet(int size)
         {
-            _set[parentX] = parentY;
-            if (_rank[x] == _rank[y]) _rank[y]++;
+            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
+
+            _parents = new int[size];
+            _ranks = new int[size];
+            ComponentCount = size;
+
+            for (var index = 0; index < size; index++)
+            {
+                _parents[index] = index;
+            }
+        }
+
+        public int FindSet(int element)
+        {
+            ValidateElement(element);
+
+            var root = element;
+            while (_parents[root] != root)
+            {
+                root = _parents[root];
+            }
+
+            while (_parents[element] != element)
+            {
+                var parent = _parents[element];
+                _parents[element] = root;
+                element = parent;
+            }
+
+            return root;
+        }
+
+        public bool UnionSet(int first, int second)
+        {
+            var firstRoot = FindSet(first);
+            var secondRoot = FindSet(second);
+
+            if (firstRoot == secondRoot) return false;
+
+            if (_ranks[firstRoot] < _ranks[secondRoot])
+            {
+                var temporaryRoot = firstRoot;
+                firstRoot = secondRoot;
+                secondRoot = temporaryRoot;
+            }
+
+            _parents[secondRoot] = firstRoot;
+            if (_ranks[firstRoot] == _ranks[secondRoot])
+            {
+                _ranks[firstRoot]++;
+            }
+
+            ComponentCount--;
+            return true;
+        }
+
+        private void ValidateElement(int element)
+        {
+            if (element < 0 || element >= _parents.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(element));
+            }
         }
     }
 }

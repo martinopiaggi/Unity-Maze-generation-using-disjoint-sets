@@ -1,42 +1,75 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell
+namespace DisjointSetMaze
 {
-    private GameObject[] _walls;
-    private int _index;
-    private Vector3 _worldPosition;
-    public Cell(int x, int y, int sizeMaze, Vector3 worldPosition)
+    public enum WallDirection
     {
-        _index = x * sizeMaze + y;
-        _walls = new GameObject[4];
-        _worldPosition = worldPosition;
-    }
-    
-    public int GetIndex()
-    {
-        return _index;
+        North = 0,
+        East = 1,
+        South = 2,
+        West = 3
     }
 
-    public void AddWall(int index,GameObject wall)
+    public static class WallDirectionExtensions
     {
-        _walls[index] = wall;
-    }
-    
-    public GameObject GetWall(int index)
-    {
-        return _walls[index];
+        public static WallDirection Opposite(this WallDirection direction)
+        {
+            switch (direction)
+            {
+                case WallDirection.North:
+                    return WallDirection.South;
+                case WallDirection.East:
+                    return WallDirection.West;
+                case WallDirection.South:
+                    return WallDirection.North;
+                case WallDirection.West:
+                    return WallDirection.East;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
     }
 
-    public void DestroyWall(int index)
+    public sealed class Cell
     {
-        if(_walls[index]!=null) GameObject.Destroy(_walls[index]);
-    }
+        private readonly GameObject[] _walls = new GameObject[4];
+        private byte _openPassages;
 
-    public Vector3 GetWorldPosition()
-    {
-        return _worldPosition;
+        public int Index { get; }
+        public Vector3 LocalPosition { get; }
+
+        public Cell(int x, int z, int mazeSize, Vector3 localPosition)
+        {
+            Index = x * mazeSize + z;
+            LocalPosition = localPosition;
+        }
+
+        public void SetWall(WallDirection direction, GameObject wall)
+        {
+            _walls[(int)direction] = wall;
+        }
+
+        public GameObject GetWall(WallDirection direction)
+        {
+            return _walls[(int)direction];
+        }
+
+        public void OpenPassage(WallDirection direction)
+        {
+            var directionIndex = (int)direction;
+            _openPassages |= (byte)(1 << directionIndex);
+
+            var wall = _walls[directionIndex];
+            if (wall != null && wall.activeSelf)
+            {
+                wall.SetActive(false);
+            }
+        }
+
+        public bool IsPassageOpen(WallDirection direction)
+        {
+            return (_openPassages & (1 << (int)direction)) != 0;
+        }
     }
 }
