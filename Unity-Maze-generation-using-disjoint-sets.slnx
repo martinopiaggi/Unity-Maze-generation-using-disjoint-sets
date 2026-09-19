@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="DisjointSetMaze.Runtime.csproj" />
+  <Project Path="DisjointSetMaze.Editor.csproj" />
+</Solution>
