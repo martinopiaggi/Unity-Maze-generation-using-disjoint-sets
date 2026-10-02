@@ -1,5 +1,10 @@
 # Disjoint Set Maze
 
+> **Legacy / deprecated for new integrations.**
+> This repository remains an educational visualization of randomized Kruskal and disjoint sets.
+> Reusable maze development has moved to [Unity Maze Toolkit](https://github.com/martinopiaggi/unity-maze-toolkit): a UPM package with separate topology and Unity adapters, path and exact-cycle planning, runnable samples and static documentation.
+> That repository is currently **private**; access is required. Install it only from an authenticated Git URL, never with an embedded token.
+
 ![mazeCover](https://user-images.githubusercontent.com/72280379/196811359-9cd38f5f-e00a-485b-b4bd-922bd84081d0.jpg)
 
 This Unity 3D project generates a **perfect maze**: every cell is reachable, there are no cycles, and there is exactly one path between any two cells. An iterative depth-first search displays the solution from the lower-left cell to the upper-right cell.
